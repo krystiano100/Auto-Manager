@@ -1,0 +1,53 @@
+Marka;Model;Rok;Cena;Status
+BMW;Seria 3;2018;76000;Dostepny
+BMW;Seria 5;2020;132000;Dostepny
+BMW;X5;2019;46000;Zarezerwowany
+Audi;A4;2017;69000;Dostepny
+Audi;A6;2019;118000;Dostepny
+Audi;Q7;2021;245000;Sprzedany
+Mercedes;C Klasa;2018;98000;Dostepny
+Mercedes;E Klasa;2020;156000;Dostepny
+Mercedes;GLC;2019;172000;Zarezerwowany
+Volkswagen;Golf;2017;52000;Dostepny
+Volkswagen;Passat;2019;87000;Dostepny
+Volkswagen;Tiguan;2021;134000;Sprzedany
+Toyota;Corolla;2020;72000;Dostepny
+Toyota;Camry;2021;148000;Dostepny
+Toyota;RAV4;2022;165000;Zarezerwowany
+Skoda;Octavia;2018;61000;Dostepny
+Skoda;Superb;2020;99000;Dostepny
+Skoda;Kodiaq;2021;143000;Sprzedany
+Ford;Focus;2017;43000;Dostepny
+Ford;Mondeo;2019;73000;Dostepny
+Ford;Kuga;2020;118000;Zarezerwowany
+Opel;Astra;2016;36000;Dostepny
+Opel;Insignia;2018;68000;Dostepny
+Opel;Grandland X;2021;119000;Sprzedany
+Hyundai;i30;2019;59000;Dostepny
+Hyundai;Tucson;2020;126000;Dostepny
+Hyundai;Santa Fe;2022;198000;Zarezerwowany
+Kia;Ceed;2018;57000;Dostepny
+Kia;Sportage;2021;132000;Dostepny
+Kia;Sorento;2022;219000;Sprzedany
+Mazda;3;2019;74000;Dostepny
+Mazda;6;2020;121000;Dostepny
+Mazda;CX-5;2021;164000;Zarezerwowany
+Honda;Civic;2018;71000;Dostepny
+Honda;CR-V;2020;147000;Dostepny
+Honda;HR-V;2021;132000;Sprzedany
+Renault;Megane;2017;47000;Dostepny
+Renault;Kadjar;2019;88000;Dostepny
+Renault;Arkana;2022;138000;Zarezerwowany
+Peugeot;308;2018;52000;Dostepny
+Peugeot;508;2020;112000;Dostepny
+Peugeot;3008;2021;146000;Sprzedany
+Volvo;V60;2019;134000;Dostepny
+Volvo;XC60;2021;228000;Dostepny
+Volvo;XC90;2022;319000;Zarezerwowany
+Nissan;Qashqai;2019;91000;Dostepny
+Nissan;X-Trail;2021;149000;Dostepny
+Seat;Leon;2018;62000;Sprzedany
+Seat;Ateca;2020;118000;Dostepny
+Fiat;Tipo;2019;48000;Dostepny
+Dacia;Duster;2021;87000;Dostepny
+Citroen;C5 Aircross;2020;124000;Zarezerwowany
