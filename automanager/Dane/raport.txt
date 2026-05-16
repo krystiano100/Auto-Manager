@@ -1,0 +1,9 @@
+========================================
+           RAPORT SALONU AUT            
+========================================
+Całkowita liczba aut w bazie: 52
+
+Auta dostępne:       35 (Wartość: 3352000 zł)
+Auta sprzedane:      8 (Wartość: 1200000 zł)
+Auta zarezerwowane:  9
+========================================
