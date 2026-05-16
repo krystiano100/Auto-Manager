@@ -73,27 +73,40 @@ namespace AutoManager
                     case "1":
                         DodajAuto();
                         break;
-
                     case "2":
                         WyswietlAuta();
                         break;
-
                     case "3":
                         SzukajPoMarce();
                         break;
-
                     case "4":
                         SzukajDoCeny();
                         break;
-
                     case "5":
                         ZmienStatus("Sprzedany");
                         break;
 
+                    // --- TWOJE OPCJE (OSOBA 3) ---
+                    case "7":
+                        EdytujCeneAuta();
+                        break;
+                    case "11":
+                        PokazNajdrozszeAuto();
+                        break;
+                    case "12":
+                        PokazNajtanszeAuto();
+                        break;
+                    case "13":
+                        PokazRaportSalonu();
+                        break;
+                    case "14":
+                        ZapiszRaportDoPliku();
+                        break;
+                    // -----------------------------
+
                     case "0":
                         dziala = false;
                         break;
-
                     default:
                         Console.WriteLine("Nie ma takiej opcji.");
                         break;
@@ -147,6 +160,16 @@ namespace AutoManager
             Console.WriteLine("3. Wyszukaj auto po marce");
             Console.WriteLine("4. Wyszukaj auta do podanej ceny");
             Console.WriteLine("5. Sprzedaj auto");
+            Console.WriteLine("6. Zarezerwuj auto"); // Zrobi Osoba 2
+            Console.WriteLine("7. Edytuj cenę auta"); // moje
+            Console.WriteLine("8. Pokaż auta dostępne"); // Zrobi Osoba 2
+            Console.WriteLine("9. Pokaż auta sprzedane"); // Zrobi Osoba 2
+            Console.WriteLine("10. Pokaż auta zarezerwowane"); // Zrobi Osoba 2
+            Console.WriteLine("11. Pokaż najdroższe auto"); // moje
+            Console.WriteLine("12. Pokaż najtańsze auto"); // moje
+            Console.WriteLine("13. Pokaż raport salonu"); // moje
+            Console.WriteLine("14. Zapisz raport do pliku"); // moje
+            Console.WriteLine("15. Doradca klienta"); // Zrobi Osoba 2
             Console.WriteLine("0. Wyjście");
 
             Console.WriteLine();
@@ -465,5 +488,179 @@ namespace AutoManager
 
             Console.WriteLine("Status auta został zmieniony.");
         }
+
+        // Opcja 7: Edytuj cenę auta
+        static void EdytujCeneAuta()
+        {
+            WyswietlAuta();
+
+            if (liczbaAut == 0)
+            {
+                return;
+            }
+
+            Console.Write("Podaj ID auta do edycji ceny: ");
+            string tekst = Console.ReadLine();
+
+            // Sprawdzenie ID
+            if (!int.TryParse(tekst, out int id))
+            {
+                Console.WriteLine("ID musi być liczbą.");
+                return;
+            }
+
+            int indeks = id - 1;
+
+            // Sprawdzenie zakresu ID
+            if (indeks < 0 || indeks >= liczbaAut)
+            {
+                Console.WriteLine("Auto o takim ID nie istnieje.");
+                return;
+            }
+
+            Console.Write($"Podaj nową cenę dla {auta[indeks, 0]} {auta[indeks, 1]}: ");
+            string nowaCenaStr = Console.ReadLine();
+
+            // Sprawdzenie poprawności nowej ceny
+            if (!int.TryParse(nowaCenaStr, out int nowaCena) || nowaCena <= 0)
+            {
+                Console.WriteLine("Cena musi być poprawną liczbą większą od 0.");
+                return;
+            }
+
+            // Aktualizacja ceny i zapis
+            auta[indeks, 3] = nowaCena.ToString();
+            ZapiszAutaDoPliku();
+
+            Console.WriteLine("Cena została pomyślnie zaktualizowana!");
+        }
+
+        // Opcja 11: Pokaż najdroższe auto
+        static void PokazNajdrozszeAuto()
+        {
+            if (liczbaAut == 0)
+            {
+                Console.WriteLine("Brak aut w bazie.");
+                return;
+            }
+
+            int maxCena = -1;
+            int maxIndeks = -1;
+
+            for (int i = 0; i < liczbaAut; i++)
+            {
+                if (int.TryParse(auta[i, 3], out int cena))
+                {
+                    if (cena > maxCena)
+                    {
+                        maxCena = cena;
+                        maxIndeks = i;
+                    }
+                }
+            }
+
+            if (maxIndeks != -1)
+            {
+                Console.WriteLine("--- NAJDROŻSZE AUTO W SALONIE ---");
+                Console.WriteLine($"{auta[maxIndeks, 0]} {auta[maxIndeks, 1]} | Rok: {auta[maxIndeks, 2]} | Cena: {auta[maxIndeks, 3]} zł | Status: {auta[maxIndeks, 4]}");
+            }
+        }
+
+        // Opcja 12: Pokaż najtańsze auto
+        static void PokazNajtanszeAuto()
+        {
+            if (liczbaAut == 0)
+            {
+                Console.WriteLine("Brak aut w bazie.");
+                return;
+            }
+
+            int minCena = int.MaxValue;
+            int minIndeks = -1;
+
+            for (int i = 0; i < liczbaAut; i++)
+            {
+                if (int.TryParse(auta[i, 3], out int cena))
+                {
+                    if (cena < minCena)
+                    {
+                        minCena = cena;
+                        minIndeks = i;
+                    }
+                }
+            }
+
+            if (minIndeks != -1)
+            {
+                Console.WriteLine("--- NAJTAŃSZE AUTO W SALONIE ---");
+                Console.WriteLine($"{auta[minIndeks, 0]} {auta[minIndeks, 1]} | Rok: {auta[minIndeks, 2]} | Cena: {auta[minIndeks, 3]} zł | Status: {auta[minIndeks, 4]}");
+            }
+        }
+
+        // Pomocnicza funkcja generująca tekst raportu dla opcji 13 i 14
+        static string GenerujTrescRaportu()
+        {
+            if (liczbaAut == 0)
+            {
+                return "Brak aut w bazie do wygenerowania raportu.\n";
+            }
+
+            int dostepne = 0, sprzedane = 0, zarezerwowane = 0;
+            long wartoscDostepnych = 0, wartoscSprzedanych = 0;
+
+            for (int i = 0; i < liczbaAut; i++)
+            {
+                if (int.TryParse(auta[i, 3], out int cena))
+                {
+                    string status = auta[i, 4];
+
+                    if (status == "Dostepny")
+                    {
+                        dostepne++;
+                        wartoscDostepnych += cena;
+                    }
+                    else if (status == "Sprzedany")
+                    {
+                        sprzedane++;
+                        wartoscSprzedanych += cena;
+                    }
+                    else if (status == "Zarezerwowany")
+                    {
+                        zarezerwowane++;
+                    }
+                }
+            }
+
+            string raport = "========================================\n" +
+                            "           RAPORT SALONU AUT            \n" +
+                            "========================================\n" +
+                            $"Całkowita liczba aut w bazie: {liczbaAut}\n\n" +
+                            $"Auta dostępne:       {dostepne} (Wartość: {wartoscDostepnych} zł)\n" +
+                            $"Auta sprzedane:      {sprzedane} (Wartość: {wartoscSprzedanych} zł)\n" +
+                            $"Auta zarezerwowane:  {zarezerwowane}\n" +
+                            "========================================\n";
+
+            return raport;
+        }
+
+        // Opcja 13: Pokaż raport salonu
+        static void PokazRaportSalonu()
+        {
+            Console.WriteLine(GenerujTrescRaportu());
+        }
+
+        // Opcja 14: Zapisz raport do pliku
+        static void ZapiszRaportDoPliku()
+        {
+            string tresc = GenerujTrescRaportu();
+
+            // Zapisanie wygenerowanego stringa do pliku raport.txt
+            File.WriteAllText(plikRaport, tresc);
+
+            Console.WriteLine($"Raport został pomyślnie zapisany do pliku: \n{plikRaport}");
+        }
+
+
+
     }
 }
