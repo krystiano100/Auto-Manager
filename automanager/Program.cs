@@ -93,6 +93,29 @@ namespace AutoManager
                     case "0":
                         dziala = false;
                         break;
+                    case "5":
+                        ZmienStatus("Sprzedany");
+                        break;
+
+                    case "6":
+                        ZmienStatus("Zarezerwowany"); 
+                        break;
+
+                    case "8":
+                        PokazAutaPoStatusie("Dostepny");
+                        break;
+
+                    case "9":
+                        PokazAutaPoStatusie("Sprzedany");
+                        break;
+
+                    case "10":
+                        PokazAutaPoStatusie("Zarezerwowany");
+                        break;
+
+                    case "15":
+                        DoradcaKlienta();
+                        break;
 
                     default:
                         Console.WriteLine("Nie ma takiej opcji.");
@@ -139,7 +162,8 @@ namespace AutoManager
             Console.ResetColor();
         }
 
-        // Funkcja wyświetlająca menu programu
+        
+         //Menu programu
         static void PokazMenu()
         {
             Console.WriteLine("1. Dodaj auto");
@@ -147,6 +171,11 @@ namespace AutoManager
             Console.WriteLine("3. Wyszukaj auto po marce");
             Console.WriteLine("4. Wyszukaj auta do podanej ceny");
             Console.WriteLine("5. Sprzedaj auto");
+            Console.WriteLine("6. Zarezerwuj auto");          
+            Console.WriteLine("8. Pokaż auta dostępne");       
+            Console.WriteLine("9. Pokaż auta sprzedane");       
+            Console.WriteLine("10. Pokaż auta zarezerwowane"); 
+            Console.WriteLine("15. Doradca klienta");         
             Console.WriteLine("0. Wyjście");
 
             Console.WriteLine();
@@ -464,6 +493,137 @@ namespace AutoManager
             ZapiszAutaDoPliku();
 
             Console.WriteLine("Status auta został zmieniony.");
+        }
+        // wyswietalanie auta według statusu
+        static void PokazAutaPoStatusie(string statusDoFiltrowania)
+        {
+            if (liczbaAut == 0)
+            {
+                Console.WriteLine("Brak aut w bazie.");
+                return;
+            }
+
+            bool znaleziono = false;
+
+            // nagłówki tabeli 
+            Console.WriteLine(
+                $"{naglowki[0],-5}" +
+                $"{naglowki[1],-15}" +
+                $"{naglowki[2],-20}" +
+                $"{naglowki[3],-10}" +
+                $"{naglowki[4],-12}" +
+                $"{naglowki[5],-15}"
+            );
+            Console.WriteLine("---------------------------------------------------------------------");
+
+            for (int i = 0; i < liczbaAut; i++)
+            {
+                // Sprawdzamy czy status auta w bazie zgadza się z tym, czego szukamy
+                if (auta[i, 4] == statusDoFiltrowania)
+                {
+                    Console.WriteLine(
+                        $"{i + 1,-5}" +
+                        $"{auta[i, 0],-15}" +
+                        $"{auta[i, 1],-20}" +
+                        $"{auta[i, 2],-10}" +
+                        $"{auta[i, 3],-12}" +
+                        $"{auta[i, 4],-15}"
+                    );
+                    znaleziono = true;
+                }
+            }
+
+            if (!znaleziono)
+            {
+                Console.WriteLine($"Brak aut o statusie: {statusDoFiltrowania}");
+            }
+        }
+
+        // Funkcja dla opcji 15 - Doradca klienta
+        static void DoradcaKlienta()
+        {
+            Console.WriteLine("=== DORADCA KLIENTA ===");
+
+            // 1. Pobranie i walidacja ceny minimalnej
+            Console.Write("Podaj minimalną cenę (zł): ");
+            string minCenaTekst = Console.ReadLine();
+            if (!int.TryParse(minCenaTekst, out int minCena) || minCena < 0)
+            {
+                Console.WriteLine("Cena minimalna musi być liczbą większą lub równą 0.");
+                return;
+            }
+
+            // 2. Pobranie i walidacja ceny maksymalnej
+            Console.Write("Podaj maksymalną cenę (zł): ");
+            string maxCenaTekst = Console.ReadLine();
+            if (!int.TryParse(maxCenaTekst, out int maxCena) || maxCena <= 0)
+            {
+                Console.WriteLine("Cena maksymalna musi być liczbą większą od 0.");
+                return;
+            }
+
+            // Sprawdzenie logiczne zakresu cen
+            if (minCena > maxCena)
+            {
+                Console.WriteLine("Cena minimalna nie może być większa od ceny maksymalnej.");
+                return;
+            }
+
+            // 3. Pobranie preferowanej marki
+            Console.Write("Podaj preferowaną markę (lub wciśnij ENTER / wpisz 'dowolna' dla wszystkich): ");
+            string preferowanaMarka = Console.ReadLine().Trim();
+
+            bool czyDowolnaMarka = string.IsNullOrEmpty(preferowanaMarka) || preferowanaMarka.ToLower() == "dowolna";
+
+            Console.WriteLine("\n=== DOPASOWANE DOSTĘPNE AUTA ===");
+
+            // Wyświetlenie nagłówków tabeli
+            Console.WriteLine(
+                $"{naglowki[0],-5}" +
+                $"{naglowki[1],-15}" +
+                $"{naglowki[2],-20}" +
+                $"{naglowki[3],-10}" +
+                $"{naglowki[4],-12}" +
+                $"{naglowki[5],-15}"
+            );
+            Console.WriteLine("---------------------------------------------------------------------");
+
+            bool znalezionoBrak = true;
+
+            for (int i = 0; i < liczbaAut; i++)
+            {
+                // tylko dostępne auta
+                if (auta[i, 4] != "Dostepny")
+                {
+                    continue;
+                }
+
+                // Pobieramy cenę auta z bazy
+                int cenaAuta = int.Parse(auta[i, 3]);
+
+                // Filtrowanie po cenie min i max
+                if (cenaAuta >= minCena && cenaAuta <= maxCena)
+                {
+                    // Filtrowanie po marce 
+                    if (czyDowolnaMarka || auta[i, 0].ToLower() == preferowanaMarka.ToLower())
+                    {
+                        Console.WriteLine(
+                            $"{i + 1,-5}" +
+                            $"{auta[i, 0],-15}" +
+                            $"{auta[i, 1],-20}" +
+                            $"{auta[i, 2],-10}" +
+                            $"{auta[i, 3],-12}" +
+                            $"{auta[i, 4],-15}"
+                        );
+                        znalezionoBrak = false;
+                    }
+                }
+            }
+
+            if (znalezionoBrak)
+            {
+                Console.WriteLine("Niestety, nie znaleźliśmy dostępnych aut spełniających Twoje kryteria.");
+            }
         }
     }
 }
