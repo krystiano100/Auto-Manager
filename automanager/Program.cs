@@ -41,7 +41,6 @@ namespace AutoManager
         // Ścieżka do pliku CSV z autami
         static string folderProjektu = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
         static string plikAuta = Path.Combine(folderProjektu, "Dane", "auta.csv");
-        static string plikRaport = Path.Combine(folderProjektu, "Dane", "raport.txt");
 
         static void Main(string[] args)
         {
@@ -90,15 +89,8 @@ namespace AutoManager
                         ZmienStatus("Sprzedany");
                         break;
 
-                    case "0":
-                        dziala = false;
-                        break;
-                    case "5":
-                        ZmienStatus("Sprzedany");
-                        break;
-
                     case "6":
-                        ZmienStatus("Zarezerwowany"); 
+                        ZmienStatus("Zarezerwowany");
                         break;
 
                     case "8":
@@ -113,15 +105,18 @@ namespace AutoManager
                         PokazAutaPoStatusie("Zarezerwowany");
                         break;
 
-                    case "15":
+                    case "11":
                         DoradcaKlienta();
+                        break;
+
+                    case "0":
+                        dziala = false;
                         break;
 
                     default:
                         Console.WriteLine("Nie ma takiej opcji.");
                         break;
                 }
-
                 // Jeśli program dalej działa,
                 // użytkownik musi kliknąć ENTER
                 if (dziala)
@@ -174,8 +169,8 @@ namespace AutoManager
             Console.WriteLine("6. Zarezerwuj auto");          
             Console.WriteLine("8. Pokaż auta dostępne");       
             Console.WriteLine("9. Pokaż auta sprzedane");       
-            Console.WriteLine("10. Pokaż auta zarezerwowane"); 
-            Console.WriteLine("15. Doradca klienta");         
+            Console.WriteLine("10. Pokaż auta zarezerwowane");
+            Console.WriteLine("11. Doradca klienta");
             Console.WriteLine("0. Wyjście");
 
             Console.WriteLine();
@@ -249,15 +244,27 @@ namespace AutoManager
                     auta[i, 4];
             }
 
-            // Zapis do pliku
-            File.WriteAllLines(plikAuta, linie);
-        }
+                // Zapis do pliku
+                try
+                {
+                    File.WriteAllLines(plikAuta, linie);
+                }
+                catch
+                {
+                    Console.WriteLine("Wystąpił błąd podczas zapisu pliku.");
+                }
+            }
 
-        // Funkcja dodająca nowe auto
-        static void DodajAuto()
-        {
-            Console.Write("Podaj markę: ");
-            string marka = Console.ReadLine();
+            // Funkcja dodająca nowe auto
+            static void DodajAuto()
+            {
+                if (liczbaAut >= 100)
+                {
+                    Console.WriteLine("Baza aut jest pełna.");
+                    return;
+                }
+                Console.Write("Podaj markę: ");
+                string marka = Console.ReadLine();
 
             Console.Write("Podaj model: ");
             string model = Console.ReadLine();
